@@ -1,6 +1,6 @@
 ---
 name: novel-pipeline-workflow
-description: Complete end-to-end novel publishing, Veo3 trailer video generation, local MP4 downloading, and SQLite database workflow. Orchestrates awesome-novel, publish-noirvella-story, veo3-trailer-generator, downloads trailer-video.mp4 locally, and manages storage in stories.db.
+description: Complete end-to-end novel publishing, Veo3 trailer video generation, local MP4 downloading into trailer-videos/, and SQLite database workflow. Orchestrates awesome-novel, publish-noirvella-story, veo3-trailer-generator, downloads trailer-videos/trailer-video.mp4 locally, and manages storage in stories.db.
 ---
 
 # Novel Pipeline Workflow Skill
@@ -30,7 +30,7 @@ Skill này là bộ điều phối trung tâm (Workflow Orchestrator) cho quy tr
        ▼
 4. veo3-trailer-generator (Tạo video qua Veo3 API)
        │
-       ├─► Tải video trailer-video.mp4 về thư mục dự án cục bộ
+       ├─► Tải video trailer-video.mp4 về thư mục trailer-videos/ của dự án
        │
        ▼
 5. SQLite Database (Cập nhật video_trailer_url cho bản ghi đã lưu)
@@ -39,8 +39,8 @@ Skill này là bộ điều phối trung tâm (Workflow Orchestrator) cho quy tr
 ## Các điểm lưu ý chính
 
 1. **Lưu dữ liệu tức thì**: Sau khi đăng truyện lên WordPress, thông tin truyện (`story_title`, `story_description`, `story_tags`, `story_url`, `first_chapter_url`) lập tức được lưu vào `stories.db`. Lúc này cột `video_trailer_path` mang giá trị **`NULL`**.
-2. **Cập nhật khi tệp MP4 có thực sự trên đĩa**: Chỉ khi bước Veo3 hoàn tất và tệp `trailer-video.mp4` thực sự tồn tại trên ổ đĩa (`os.path.exists`), cột `video_trailer_path` mới được cập nhật thành `"trailer-video.mp4"`.
-3. **Đường dẫn tệp video local**: Ứng dụng đọc CSDL có thể lấy đường dẫn tuyệt đối tệp MP4 bằng công thức: `os.path.join(record["project_path"], record["video_trailer_path"])` (Ví dụ: `D:\1.Programing\Story theme\<dự-án>\trailer-video.mp4`).
+2. **Cập nhật khi tệp MP4 có thực sự trên đĩa**: Chỉ khi bước Veo3 hoàn tất và tệp `trailer-video.mp4` thực sự tồn tại trên ổ đĩa (`os.path.exists`), cột `video_trailer_path` mới được cập nhật thành `"trailer-videos/trailer-video.mp4"`.
+3. **Đường dẫn tệp video local**: Ứng dụng đọc CSDL có thể lấy đường dẫn tuyệt đối tệp MP4 bằng công thức: `os.path.join(record["project_path"], record["video_trailer_path"])` (Ví dụ: `D:\1.Programing\Story theme\<dự-án>\trailer-videos\trailer-video.mp4`).
 4. **Cập nhật / Retry trailer khi bị lỗi**: Nếu bước Veo3 bị lỗi hoặc rỗng, có thể chạy lại riêng bước Veo3 bằng tham số `--update-trailer-only`.
 
 ## Giá trị mặc định (Default Configuration)

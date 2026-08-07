@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php -l includes/views.php)",
+      "Bash(php -l includes/rest-stats.php)",
+      "PowerShell($src = \"D:\\\\1.Programing\\\\Story theme\\\\wordpress\\\\plugin\\\\noirvella-stories\"; $dest = \"D:\\\\1.Programing\\\\Story theme\\\\wordpress\\\\plugin\\\\noirvella-stories.zip\"; Remove-Item $dest -Force; Compress-Archive -Path $src -DestinationPath $dest -CompressionLevel Optimal; Add-Type -AssemblyName System.IO.Compression.FileSystem; $z = [System.IO.Compression.ZipFile]::OpenRead\\($dest\\); $z.Entries | Select-Object -ExpandProperty FullName; $z.Dispose\\(\\))"
+    ]
+  }
+}

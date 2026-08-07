@@ -40,9 +40,13 @@ To prevent Google Labs / Veo3 safety filters from triggering false positives (`V
    - `stab` / `sword slash` / `decapitate` ➔ `steel blade gleaming in moonlight`, `heavy armor clanking in motion`.
    - `murder` / `execution` ➔ `fall from power`, `stripping of royal status`.
 
-3. **Public Figures & Real Persons:**
-   - PROHIBITED: Real celebrity names, real-world political figures, trademarked fictional characters.
-   - USE INSTEAD: Purely original fictional visual descriptors (`silver-gold hair`, `obsidian armor`, `midnight-blue velvet gown`).
+3. **Public Figures, Real Persons, Real Places & Brands:**
+   - PROHIBITED PEOPLE: Real celebrity names, real-world political figures, trademarked fictional characters.
+     - USE INSTEAD: Purely original fictional visual descriptors (`silver-gold hair`, `obsidian armor`, `midnight-blue velvet gown`).
+   - PROHIBITED LOCATIONS: Real country/city names, real geographical landmarks (e.g. `Paris`, `New York`, `Eiffel Tower`, `Big Ben`, `Hà Nội`).
+     - USE INSTEAD: Purely fictional, cinematic setting descriptions (`sprawling neon metropolis`, `gothic iron clocktower`, `foggy ancient coastal fortress`).
+   - PROHIBITED BRANDS: Real commercial brand names & trademarked product names (e.g. `iPhone`, `Rolex`, `Nike`, `BMW`).
+     - USE INSTEAD: Generic visual product descriptions (`sleek glass smartphone`, `vintage gold wristwatch`, `dark luxury sedan`).
 
 ## IV. Output JSON Schema Standard
 
@@ -63,6 +67,6 @@ To prevent Google Labs / Veo3 safety filters from triggering false positives (`V
     "sfx": ["...", "...", "..."],
     "music": "restrained, gradually building, no sudden swell"
   },
-  "negative_prompt": "no real or recognizable people, no celebrity likeness, no logos, no branded products, no alcohol, no graphic violence, no exaggerated slow-motion, no unnatural camera shake, no synchronized crowd reactions"
+  "negative_prompt": "no real or recognizable people, no celebrity likeness, no real-world landmarks, no recognizable real geographic locations, no logos, no branded products, no alcohol, no graphic violence, no exaggerated slow-motion, no unnatural camera shake, no synchronized crowd reactions"
 }
 ```

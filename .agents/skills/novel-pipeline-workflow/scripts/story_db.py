@@ -54,12 +54,42 @@ def init_db(db_path=None):
     conn.commit()
     conn.close()
 
-def check_local_trailer_exists(project_path, trailer_name="trailer-video.mp4"):
+def check_local_trailer_exists(project_path, trailer_name=None):
     norm_path = os.path.abspath(project_path)
-    full_mp4 = os.path.join(norm_path, trailer_name)
-    if os.path.exists(full_mp4) and os.path.getsize(full_mp4) > 0:
-        return trailer_name
+    if trailer_name:
+        full_mp4 = os.path.join(norm_path, trailer_name)
+        if os.path.exists(full_mp4) and os.path.getsize(full_mp4) > 0:
+            return trailer_name
+
+    rel_new = os.path.join("trailer-videos", "trailer-video.mp4")
+    full_new = os.path.join(norm_path, rel_new)
+    if os.path.exists(full_new) and os.path.getsize(full_new) > 0:
+        return rel_new
+
+    # Check for any .mp4 files inside trailer-videos/ directory
+    tv_dir = os.path.join(norm_path, "trailer-videos")
+    if os.path.exists(tv_dir) and os.path.isdir(tv_dir):
+        mp4_files = [f for f in os.listdir(tv_dir) if f.endswith(".mp4") and os.path.getsize(os.path.join(tv_dir, f)) > 0]
+        if mp4_files:
+            mp4_files.sort(key=lambda x: os.path.getmtime(os.path.join(tv_dir, x)), reverse=True)
+            return os.path.join("trailer-videos", mp4_files[0])
+
+    full_old = os.path.join(norm_path, "trailer-video.mp4")
+    if os.path.exists(full_old) and os.path.getsize(full_old) > 0:
+        return "trailer-video.mp4"
+
     return None
+
+def list_local_trailers(project_path):
+    """Returns a list of relative paths for all trailer mp4 files in project_path/trailer-videos/"""
+    norm_path = os.path.abspath(project_path)
+    tv_dir = os.path.join(norm_path, "trailer-videos")
+    trailers = []
+    if os.path.exists(tv_dir) and os.path.isdir(tv_dir):
+        for f in os.listdir(tv_dir):
+            if f.endswith(".mp4") and os.path.getsize(os.path.join(tv_dir, f)) > 0:
+                trailers.append(os.path.join("trailer-videos", f))
+    return trailers
 
 def save_story(project_path, story_title, story_description="", story_tags="", story_url="", first_chapter_url="", video_trailer_path=None, db_path=None):
     init_db(db_path)
@@ -107,7 +137,7 @@ def update_trailer(project_path, video_trailer_path=None, db_path=None):
     norm_path = os.path.abspath(project_path)
 
     # Verify if file actually exists on disk before updating
-    verified_path = check_local_trailer_exists(norm_path, video_trailer_path if video_trailer_path else "trailer-video.mp4")
+    verified_path = check_local_trailer_exists(norm_path, video_trailer_path)
     if not verified_path and video_trailer_path:
         # User explicitly passed a path: check if that specific path exists
         if os.path.exists(os.path.join(norm_path, video_trailer_path)):
@@ -172,7 +202,7 @@ def main():
 
     update_trailer_parser = subparsers.add_parser("update-trailer", help="Cập nhật video_trailer_path khi đã có file mp4 thực tế")
     update_trailer_parser.add_argument("--project-path", required=True)
-    update_trailer_parser.add_argument("--video-trailer-path", default="trailer-video.mp4")
+    update_trailer_parser.add_argument("--video-trailer-path", default=None)
     update_trailer_parser.add_argument("--db-path", default=None)
 
     list_parser = subparsers.add_parser("list", help="Danh sách tất cả truyện đã lưu")

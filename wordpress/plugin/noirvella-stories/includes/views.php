@@ -21,6 +21,13 @@ const NVL_VIEW_COOKIE_TTL = 12 * HOUR_IN_SECONDS;
  * Counts one view against a story. Chapter views roll UP to the story
  * root, so "most read" ranks stories by total readership rather than
  * letting a single popular chapter outrank a whole story.
+ *
+ * Two counters are written, on purpose:
+ *  - the lifetime total in postmeta, read on every card render, so the
+ *    common case stays a single get_post_meta() with no JOIN;
+ *  - today's row in the stats table (see view-stats.php), which is the
+ *    only thing that can answer "most read this week".
+ * Both are one indexed write against the same story root.
  */
 function nvl_register_view( $post_id ) {
     $post_id = (int) $post_id;
@@ -31,6 +38,8 @@ function nvl_register_view( $post_id ) {
 
     $count = (int) get_post_meta( $root_id, NVL_VIEWS_META, true );
     update_post_meta( $root_id, NVL_VIEWS_META, $count + 1 );
+
+    nvl_record_daily_view( $root_id );
 
     return $root_id;
 }
@@ -104,7 +113,28 @@ function nvl_format_views( $count ) {
  * at most once an hour (or right after an editor saves anything, which
  * purges it), never per request.
  */
-function nvl_get_popular_stories( $count = 8 ) {
+function nvl_get_popular_stories( $count = 8, $period = 'all' ) {
+
+    // 'all' keeps the original postmeta-ordered query below. Any real
+    // window has to go through the dated stats table, which is a different
+    // query shape entirely -- so hand off rather than bolt a date range
+    // onto a meta_key sort that has no dates in it.
+    if ( 'all' !== $period ) {
+        $top = nvl_get_top_stories( array( 'period' => $period, 'limit' => $count ) );
+        $ids = wp_list_pluck( $top['stories'], 'id' );
+        if ( empty( $ids ) ) return array();
+
+        return get_posts( array(
+            'post_type'              => 'nvl_story',
+            'post__in'               => $ids,
+            'orderby'                => 'post__in',   // preserve the ranking
+            'posts_per_page'         => count( $ids ),
+            'post_status'            => 'publish',
+            'update_post_meta_cache' => false,
+            'update_post_term_cache' => false,
+        ) );
+    }
+
     $key    = "nvl_popular_{$count}";
     $cached = get_transient( $key );
     if ( false !== $cached ) return $cached;

@@ -190,7 +190,7 @@ def apply_remove_watermark(mp4_path):
             except: pass
     return False
 
-def generate_trailer(project_path, project_url, profile_name="via-01", base_url=API_BASE_URL, timeout_sec=780, prompt_file=None):
+def generate_trailer(project_path, project_url, profile_name="via-01", base_url=API_BASE_URL, timeout_sec=780, prompt_file=None, output_name="trailer-video.mp4"):
     prompt_text = read_prompt_file(project_path, prompt_file)
     print(f"[*] Đã đọc prompt ({len(prompt_text)} ký tự) từ dự án: {project_path}")
 
@@ -229,11 +229,17 @@ def generate_trailer(project_path, project_url, profile_name="via-01", base_url=
         print(f"[X] Không thể lấy videoUrl: {err}")
         return {"success": False, "error": err, "jobId": job_id}
 
-    # Tải video về thư mục dự án
-    local_mp4_path = os.path.join(project_path, "trailer-video.mp4")
+    # Tải video về thư mục trailer-videos trong dự án
+    output_dir = os.path.join(project_path, "trailer-videos")
+    os.makedirs(output_dir, exist_ok=True)
+
+    if not output_name.endswith(".mp4"):
+        output_name += ".mp4"
+
+    local_mp4_path = os.path.join(output_dir, output_name)
     dl_ok, dl_err = download_video(video_url, local_mp4_path)
 
-    # Tự động xóa watermark logo và ghi đè file trailer-video.mp4
+    # Tự động xóa watermark logo và ghi đè file MP4
     if dl_ok:
         apply_remove_watermark(local_mp4_path)
 
@@ -244,11 +250,14 @@ def generate_trailer(project_path, project_url, profile_name="via-01", base_url=
         "downloadError": dl_err if not dl_ok else None,
         "jobId": job_id
     }
-    save_result(project_path, res_data)
+    save_result(project_path, res_data, output_name)
     return res_data
 
-def save_result(project_path, res_data):
-    res_path = os.path.join(project_path, "trailer-result.json")
+def save_result(project_path, res_data, output_name="trailer-video.mp4"):
+    output_dir = os.path.join(project_path, "trailer-videos")
+    os.makedirs(output_dir, exist_ok=True)
+    base_name = os.path.splitext(output_name)[0]
+    res_path = os.path.join(output_dir, f"{base_name}-result.json")
     res_data["updatedAt"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     with open(res_path, 'w', encoding='utf-8') as f:
         json.dump(res_data, f, ensure_ascii=False, indent=2)
@@ -264,7 +273,8 @@ def main():
     parser.add_argument("--profile-name", default=DEFAULT_PROFILE_NAME, help="Tên profile anti-detect (mặc định VEO3)")
     parser.add_argument("--api-url", default=API_BASE_URL, help="Base URL của ghmautomate API")
     parser.add_argument("--timeout", type=int, default=780, help="Thời gian chờ tối đa (giây)")
-    parser.add_argument("--prompt-file", default=None, help="Tệp prompt tùy chỉnh nếu không dùng trailer-prompt.md")
+    parser.add_argument("--prompt-file", default=None, help="Tệp prompt tùy chỉnh")
+    parser.add_argument("--output-name", default="trailer-video.mp4", help="Tên tệp video trailer lưu trong trailer-videos/ (mặc định trailer-video.mp4)")
 
     args = parser.parse_args()
 
@@ -274,7 +284,8 @@ def main():
         profile_name=args.profile_name,
         base_url=args.api_url,
         timeout_sec=args.timeout,
-        prompt_file=args.prompt_file
+        prompt_file=args.prompt_file,
+        output_name=args.output_name
     )
 
     print(json.dumps(res, ensure_ascii=False, indent=2))

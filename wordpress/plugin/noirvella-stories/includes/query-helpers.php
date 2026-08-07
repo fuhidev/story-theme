@@ -320,6 +320,7 @@ function nvl_bust_cache_on_save( $post_id, $post ) {
         'nvl_related_',
         'nvl_latest_chapters_',
         'nvl_popular_',
+        'nvl_top_',
         'nvl_completed_',
         'nvl_genre_',
     );

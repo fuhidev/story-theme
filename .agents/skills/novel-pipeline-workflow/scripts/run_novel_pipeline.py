@@ -201,11 +201,12 @@ def main():
     if args.update_trailer_only:
         veo3_url = args.veo3_project_url or DEFAULT_VEO3_PROJECT_URL
         v_url = run_veo3_step(proj_path, veo3_url, args.profile_name)
-        if v_url and os.path.exists(os.path.join(proj_path, "trailer-video.mp4")):
-            db_res = story_db.update_trailer(proj_path, "trailer-video.mp4", args.db_path)
-            print(f"[V] Đã xác nhận file trailer-video.mp4 trên đĩa và cập nhật SQLite DB!")
+        detected_trailer = story_db.check_local_trailer_exists(proj_path)
+        if v_url and detected_trailer:
+            db_res = story_db.update_trailer(proj_path, detected_trailer, args.db_path)
+            print(f"[V] Đã xác nhận file {detected_trailer} trên đĩa và cập nhật SQLite DB!")
         else:
-            print(f"[!] Chưa tạo thành công file trailer-video.mp4 trên đĩa, video_trailer_path hiện để NULL.")
+            print(f"[!] Chưa tạo thành công file trailer video trên đĩa, video_trailer_path hiện để NULL.")
         return
 
 
@@ -217,9 +218,8 @@ def main():
     story_url = existing_record.get("story_url", "") if existing_record else ""
     first_chapter_url = existing_record.get("first_chapter_url", "") if existing_record else ""
     
-    # Check if local trailer-video.mp4 actually exists on disk
-    local_mp4_path = os.path.join(proj_path, "trailer-video.mp4")
-    video_trailer_path = "trailer-video.mp4" if (os.path.exists(local_mp4_path) and os.path.getsize(local_mp4_path) > 0) else None
+    # Check if local trailer video actually exists on disk
+    video_trailer_path = story_db.check_local_trailer_exists(proj_path)
 
     # Step 1: Publish story to WordPress
     if not args.skip_publish and args.wp_username and args.wp_password:
@@ -246,8 +246,9 @@ def main():
     # Step 3: Veo3 Video Generation (and update video_trailer_path ONLY when file is downloaded to disk)
     if not args.skip_veo3 and args.veo3_project_url:
         v_url = run_veo3_step(proj_path, args.veo3_project_url, args.profile_name)
-        if v_url and os.path.exists(local_mp4_path) and os.path.getsize(local_mp4_path) > 0:
-            video_trailer_path = "trailer-video.mp4"
+        detected_trailer = story_db.check_local_trailer_exists(proj_path)
+        if v_url and detected_trailer:
+            video_trailer_path = detected_trailer
             db_res = story_db.update_trailer(proj_path, video_trailer_path, args.db_path)
         else:
             print(f"[!] Tạo video Veo3 bị lỗi hoặc tệp MP4 chưa có trên đĩa. video_trailer_path hiện giữ nguyên trong DB.")

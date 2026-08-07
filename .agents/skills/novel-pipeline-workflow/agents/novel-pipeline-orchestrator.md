@@ -42,7 +42,7 @@ role: Novel Pipeline Master Orchestrator
    - Default Veo3 Project URL: `https://labs.google/fx/tools/flow/project/b401d61b-8cd7-40ad-a85f-c2335107e938`
    - Default Profile Name: `VEO3`
    - Execute `generate_veo3_trailer.py` to send trailer prompt to Veo3 API (`http://127.0.0.1:1408`).
-   - Automatically download `trailer-video.mp4` locally into the project directory.
+   - Automatically download `trailer-video.mp4` locally into the `trailer-videos/` directory of the project.
 
 5. **Step 5: Database Finalization**
    - Update `video_trailer_url` in `stories.db` and output final summary.
