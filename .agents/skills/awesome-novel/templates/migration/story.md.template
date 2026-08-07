@@ -1,0 +1,32 @@
+# {title}
+
+## Meta Information
+
+- **skill_version:** 4.0
+- **Genre:** {genre}
+- **Tags:** {tags}
+- **Status:** Writing
+
+## Reference Paths
+
+| Setting | Path | Summary |
+|---------|------|---------|
+| World-building | `settings/world-setting.md` | |
+| Genre | `settings/genre-setting.md` | |
+| Characters | `settings/character-setting/` | |
+| Writing Style | `settings/writing-style.md` | |
+
+## Main Storyline
+
+- **Structure Type:**  <!-- Short story/Three-volume/Five-volume/Multi-volume serialization -->
+- **Total Volumes:**
+- **Core Conflict of the Book:**  <!-- One-sentence main storyline, cannot be answered without finishing all volumes -->
+
+## Volume Planning
+
+### Volume 1
+
+- **Title:**
+- **Arc Position:**  <!-- Position in the overall arc: Beginning/Development/Turn/Conclusion -->
+- **Core Conflict:**  <!-- Who + does what + hindered by what -->
+- **Estimated Chapters:**

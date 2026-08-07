@@ -1,0 +1,39 @@
+# AI Flavor Detection Rules
+
+> Detect and purify AI fatigue words, sentence patterns, and rewriting algorithms.
+
+## Fatigue Words (Chinese & English Blocklist)
+
+### Adverbs
+- suddenly, abruptly, instantly, immediately, silently
+- quietly, suddenly, finally, actually, literally
+
+### Verbs
+- realized, felt, thought, noticed, discovered (Overuse)
+- nod, smile, sigh, shrug (Overuse)
+
+### Adjectives
+- some kind of, to some extent, in some way
+- strange, weird, unusual, peculiar
+
+### Conjunctions
+- however, but, nevertheless, meanwhile
+- however, meanwhile, nevertheless, therefore
+
+### Physical Reaction Templates
+- gasped, pupils shrank, body stiffened, heart skipped a beat
+
+## Sentence Structure Rules
+
+(Read from `tic-patterns.yaml`. The following is a summary of high-frequency rules)
+
+- Forbidden "Not X, but Y" structure (negative-correction structure)
+- Forbidden "Body part + emotional verb" template ("His heart sank")
+- Forbidden analytical conclusion structures ("This shows...", "This means...")
+- Forbidden literary critique tone ("Through X, Y is shown")
+- Forbidden using abstract labels instead of specific events ("Relationship progressed", "Conflict escalated")
+
+## Rewriting Algorithms
+
+- Perception word removal: Delete leading words like "saw/heard/smelled/felt", directly write the perceived content
+- Past tense / Change-of-state particle purification: If past-tense state markers appear more than 5 times within 3 consecutive sentences → mark the paragraph for the author to judge, do not arbitrarily modify it

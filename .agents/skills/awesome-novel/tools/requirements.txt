@@ -1,0 +1,1 @@
+# init.py uses Python standard libraries only; no external dependencies required.

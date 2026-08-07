@@ -1,0 +1,22 @@
+# Foreshadowing Overview — {project_name}
+
+> Cross-volume foreshadowing summary, automatically extracted from the hooks field of each chapter's chapter.md. **Do not edit directly** — to make changes, edit the corresponding chapter.md.
+> Used for quickly locating active/pending foreshadowing during cross-volume reviews.
+
+## Active Foreshadowing (Pending Resolution)
+
+| Foreshadowing | Intro Chapter | Type | Priority | Expected Resolution | Last Mentioned |
+|---------------|---------------|------|----------|---------------------|----------------|
+| | | | | | |
+
+## Resolved Foreshadowing
+
+| Foreshadowing | Intro Chapter | Resolution Chapter | Type | Priority |
+|---------------|---------------|--------------------|------|----------|
+| | | | | |
+
+## Abandoned Foreshadowing
+
+| Foreshadowing | Intro Chapter | Reason for Abandonment |
+|---------------|---------------|------------------------|
+| | | |

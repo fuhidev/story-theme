@@ -1,0 +1,20 @@
+# Genre Setting
+
+> Total 5 fields. See `references/genre-style.md` for details.
+
+## Selected Genre
+{Genre id} — {English Name}
+
+## Genre Satisfaction
+- (What satisfactions readers want from this genre, 3-5 items)
+
+## Pacing Rules
+- **Pacing Tendency**: More action / More setup / Alternating tension and release / Tense throughout
+- **Tension Cycle**: Small climax every N chapters, Big climax every N chapters
+- **Setup Limit**: Maximum continuous N chapters of setup
+
+## Cliches to Avoid
+- (Tropes readers are tired of in this genre, ≥3 items)
+
+## Genre Taboos
+- (Things that absolutely must not appear, ≥2 items)

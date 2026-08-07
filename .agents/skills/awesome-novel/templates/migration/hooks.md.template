@@ -1,0 +1,82 @@
+# hooks.yaml - Foreshadowing/Hook Tracking
+# Based on InkOS Hook Lifecycle + webnovel-writer Reading Power Taxonomy
+# Tracks the full lifecycle of cross-chapter foreshadowing: pending → mentioned → resolved → abandoned
+
+hooks:
+  # Each hook has a full lifecycle status
+  # id: Unique identifier
+  # description: Hook description (one sentence)
+  # introduced_in: Intro chapter (vol-ch format)
+  # status: pending | mentioned | resolved | abandoned
+  # payoff_timing: immediate (1-3 chapters) | near_term (5-10 chapters) | mid_arc (within this volume) | slow_burn (cross-volume) | endgame (final)
+  # priority: 1 (core main line) | 2 (important side line) | 3 (optional foreshadowing)
+  # hook_type: mystery | threat | promise | clue | relationship | power | emotion (anger/heartache/empathy driven) | choice (dilemma driven) | desire (expectation fulfillment driven)
+  # hook_strength: strong (end of volume/key turning point) | medium (regular chapter) | weak (transition chapter)
+  # hook_position: chapter_end (drives next chapter) | in_chapter (maintains immersion) | both
+  # last_mentioned_chapter: Chapter where it was most recently mentioned
+  # resolution_chapter: Chapter of resolution (filled when resolved/abandoned)
+  # notes: Additional notes
+  - id: ""
+    description: ""
+    introduced_in: "1-1"
+    status: "pending"
+    payoff_timing: "near_term"
+    priority: 1
+    hook_type: "mystery"
+    hook_strength: "medium"      # strong | medium | weak
+    hook_position: "chapter_end" # chapter_end | in_chapter | both
+    seed_text: ""           # Original text snippet when hook was planted (1-3 sentences), used to anchor reader memory upon payoff
+    seed_location: ""       # Specific location planted (vol-ch format)
+    last_mentioned_chapter: ""
+    resolution_chapter: ""
+    notes: ""
+
+# Hook Type Guide (Expanded from webnovel-writer Reading Power Taxonomy)
+hook_type_guide:
+  mystery:     "Mystery Hook: Information gap/unsolved mystery → reader wants answers"
+  threat:      "Threat Hook: Enemy appears/danger approaches → reader worries about character safety"
+  promise:     "Promise Hook: Explicit prediction of future event → reader anticipates fulfillment"
+  clue:        "Clue Hook: Fragmented info/hint → reader wants to piece together the whole picture"
+  relationship: "Relationship Hook: Relational tension/change → reader wants to see where it goes"
+  power:       "Power Hook: Capability breakthrough/new skill preview → reader anticipates power-up"
+  emotion:     "Emotion Hook: Triggers anger/heartache/empathy/injustice → reader wants protagonist to get even or see justice"
+  choice:      "Choice Hook: Dilemma/high-risk decision → reader wants to see what the character chooses"
+  desire:      "Desire Hook: Reward/breakthrough/revenge/truth is imminent → reader wants to see the wish fulfilled"
+
+# Hook Strength Guide
+hook_strength_guide:
+  strong:  "Volume end/key turning point/before major conflict -- readers must immediately know what happens next"
+  medium:  "Regular plot chapter -- readers want to know, but can wait for the next chapter"
+  weak:    "Transition/setup chapter -- maintains reading momentum"
+
+# Hook Health Check Rules (Borrowed from InkOS Auditor's hook health analysis)
+hook_health_rules:
+  # Reasonable distribution of same-type hooks across different payoff intervals
+  payoff_distribution:
+    immediate_max: 3     # Max 3 unresolved hooks in the immediate interval simultaneously
+    near_term_max: 5     # Max 5 in the near_term interval
+    mid_arc_max: 8       # Max 8 in the mid_arc interval
+    slow_burn_max: 5     # Max 5 in the slow_burn interval
+
+  # Hook staleness detection: Hooks unmentioned for >N chapters are marked as stale
+  stale_threshold:
+    high_priority: 5     # High priority hook unmentioned for >5 chapters → warning
+    normal_priority: 3   # Normal hook unmentioned for >3 chapters → warning
+
+  # Disallowed hook statuses
+  no_burst_settlement: true   # Do not allow concentrating the resolution of >3 hooks within the same chapter
+  no_orphan_hooks: true       # Do not allow abandoned hooks linked to active characters/main line
+
+  # Hook strength distribution check
+  strength_distribution:
+    max_consecutive_weak: 3    # No more than 3 consecutive weak hooks
+    require_strong_every: 5    # At least one strong hook every 5 chapters (usually at volume end or key turning point)
+
+# Hook Operational Semantics (Borrowed from InkOS's upsert/mention/resolve/defer)
+hook_operations:
+  upsert: "Add or update hook (update description and last_mentioned when the same hook evolves across chapters). New hooks must extract 1-3 sentences of original text from main text during archiving to fill into seed_text"
+  mention: "Existing hook mentioned in this chapter, update last_mentioned_chapter"
+  resolve: "Hook resolved in current chapter, fill in resolution_chapter. Upon payoff, the original scene in seed_text must be referenced so the payoff paragraph echoes the scene when it was planted"
+  defer: "Hook resolution postponed (must explain reason and new payoff expectation)"
+  abandon: "Abandon hook (only when the main plot direction changes, must specify reason)"
+  extract_seed: "Extract original text snippet (1-3 sentences) of newly planted hooks from main text during archiving, fill into the hook's seed_text field"
