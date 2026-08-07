@@ -1,0 +1,16 @@
+# Ignore everything by default
+*
+
+# Track .gitignore
+!.gitignore
+
+# Track .agents directory and its content
+!.agents/
+!.agents/**
+
+# Track wordpress directory and its content
+!wordpress/
+!wordpress/**
+
+# Track API.md
+!API.md
